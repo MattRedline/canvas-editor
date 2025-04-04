@@ -84,9 +84,9 @@ export default class Editor {
     data: IEditorData | IElement[],
     options: IEditorOption = {}
   ) {
-    // 合并配置
+    // Merge configuration
     const editorOptions = mergeOption(options)
-    // 数据处理
+    // Data processing
     data = deepClone(data)
     let headerElementList: IElement[] = []
     let mainElementList: IElement[] = []
@@ -109,13 +109,13 @@ export default class Editor {
         isForceCompensation: true
       })
     })
-    // 监听
+    // Initialize listener
     this.listener = new Listener()
-    // 事件
+    // Initialize event bus
     this.eventBus = new EventBus<EventBusMap>()
-    // 重写
+    // Initialize override
     this.override = new Override()
-    // 启动
+    // Initialize draw
     const draw = new Draw(
       container,
       editorOptions,
@@ -128,31 +128,31 @@ export default class Editor {
       this.eventBus,
       this.override
     )
-    // 命令
+    // Initialize command
     this.command = new Command(new CommandAdapt(draw))
-    // 菜单
+    // Initialize context menu
     const contextMenu = new ContextMenu(draw, this.command)
-    // 快捷键
+    // Initialize shortcut
     const shortcut = new Shortcut(draw, this.command)
-    // 注册
+    // Initialize register
     this.register = new Register({
       contextMenu,
       shortcut,
       i18n: draw.getI18n()
     })
-    // 注册销毁方法
+    // Register destroy method
     this.destroy = () => {
       draw.destroy()
       shortcut.removeEvent()
       contextMenu.removeEvent()
     }
-    // 插件
+    // Initialize plugin
     const plugin = new Plugin(this)
     this.use = plugin.use.bind(plugin)
   }
 }
 
-// 对外方法
+// Public methods
 export {
   splitText,
   createDomFromElementList,
@@ -160,7 +160,7 @@ export {
   getTextFromElementList
 }
 
-// 对外常量
+// Public constants
 export {
   EDITOR_COMPONENT,
   LETTER_CLASS,
@@ -168,7 +168,7 @@ export {
   EDITOR_CLIPBOARD
 }
 
-// 对外枚举
+// Public enums
 export {
   Editor,
   RowFlex,
@@ -205,7 +205,7 @@ export {
   FlexDirection
 }
 
-// 对外类型
+// Public types
 export type {
   IElement,
   IEditorData,

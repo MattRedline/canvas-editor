@@ -87,7 +87,7 @@ export class SelectControl implements IControlInstance {
     const { startIndex } = context.range || this.control.getRange()
     const startElement = elementList[startIndex]
     const data: IElement[] = []
-    // 向左查找
+    // Search left
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -103,7 +103,7 @@ export class SelectControl implements IControlInstance {
       }
       preIndex--
     }
-    // 向右查找
+    // Search right
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -127,7 +127,7 @@ export class SelectControl implements IControlInstance {
     context: IControlContext = {},
     options: IControlRuleOption = {}
   ): number {
-    // 校验是否可以设置
+    // Validate if setting is allowed
     if (
       !this.element.control?.selectExclusiveOptions?.inputAble ||
       (!options.isIgnoreDisabledRule &&
@@ -137,18 +137,18 @@ export class SelectControl implements IControlInstance {
     }
     const elementList = context.elementList || this.control.getElementList()
     const range = context.range || this.control.getRange()
-    // 收缩边界到Value内
+    // Shrink boundary to Value
     this.control.shrinkBoundary(context)
     const { startIndex, endIndex } = range
     const draw = this.control.getDraw()
-    // 移除选区元素
+    // Remove selected elements
     if (startIndex !== endIndex) {
       draw.spliceElementList(elementList, startIndex + 1, endIndex - startIndex)
     } else {
-      // 移除空白占位符
+      // Remove placeholder
       this.control.removePlaceholder(startIndex, context)
     }
-    // 非文本类元素或前缀过渡掉样式属性
+    // Remove style attributes for non-text elements or prefix
     const startElement = elementList[startIndex]
     const anchorElement =
       (startElement.type &&
@@ -161,7 +161,7 @@ export class SelectControl implements IControlInstance {
             ...CONTROL_STYLE_ATTR
           ])
         : omitObject(startElement, ['type'])
-    // 插入起始位置
+    // Insert at start position
     const start = range.startIndex + 1
     for (let i = 0; i < data.length; i++) {
       const newElement: IElement = {
@@ -183,14 +183,14 @@ export class SelectControl implements IControlInstance {
     }
     const elementList = this.control.getElementList()
     const range = this.control.getRange()
-    // 收缩边界到Value内
+    // Shrink boundary to Value
     this.control.shrinkBoundary()
     const { startIndex, endIndex } = range
     const startElement = elementList[startIndex]
     const endElement = elementList[endIndex]
     // backspace
     if (evt.key === KeyMap.Backspace) {
-      // 清空选项
+      // Clear options
       if (startIndex !== endIndex) {
         return this.clearSelect()
       } else {
@@ -201,17 +201,17 @@ export class SelectControl implements IControlInstance {
           endElement.controlComponent === ControlComponent.POST_TEXT ||
           startElement.controlComponent === ControlComponent.PLACEHOLDER
         ) {
-          // 前缀、后缀、占位符
+          // Prefix, postfix, placeholder
           return this.control.removeControl(startIndex)
         } else {
-          // 清空选项
+          // Clear options
           return this.clearSelect()
         }
       }
     } else if (evt.key === KeyMap.Delete) {
-      // 移除选区元素
+      // Remove selected elements
       if (startIndex !== endIndex) {
-        // 清空选项
+        // Clear options
         return this.clearSelect()
       } else {
         const endNextElement = elementList[endIndex + 1]
@@ -223,10 +223,10 @@ export class SelectControl implements IControlInstance {
           endNextElement.controlComponent === ControlComponent.POST_TEXT ||
           startElement.controlComponent === ControlComponent.PLACEHOLDER
         ) {
-          // 前缀、后缀、占位符
+          // Prefix, postfix, placeholder
           return this.control.removeControl(startIndex)
         } else {
-          // 清空选项
+          // Clear options
           return this.clearSelect()
         }
       }
@@ -243,7 +243,7 @@ export class SelectControl implements IControlInstance {
     if (startIndex === endIndex) {
       return startIndex
     }
-    // 清空选项
+    // Clear options
     return this.clearSelect()
   }
 
@@ -252,7 +252,7 @@ export class SelectControl implements IControlInstance {
     options: IControlRuleOption = {}
   ): number {
     const { isIgnoreDisabledRule = false, isAddPlaceholder = true } = options
-    // 校验是否可以设置
+    // Validate if setting is allowed
     if (!isIgnoreDisabledRule && this.control.getIsDisabledControl(context)) {
       return -1
     }
@@ -261,7 +261,7 @@ export class SelectControl implements IControlInstance {
     const startElement = elementList[startIndex]
     let leftIndex = -1
     let rightIndex = -1
-    // 向左查找
+    // Search left
     let preIndex = startIndex
     while (preIndex > 0) {
       const preElement = elementList[preIndex]
@@ -275,7 +275,7 @@ export class SelectControl implements IControlInstance {
       }
       preIndex--
     }
-    // 向右查找
+    // Search right
     let nextIndex = startIndex + 1
     while (nextIndex < elementList.length) {
       const nextElement = elementList[nextIndex]
@@ -290,10 +290,10 @@ export class SelectControl implements IControlInstance {
       nextIndex++
     }
     if (!~leftIndex || !~rightIndex) return -1
-    // 删除元素
+    // Remove elements
     const draw = this.control.getDraw()
     draw.spliceElementList(elementList, leftIndex + 1, rightIndex - leftIndex)
-    // 增加占位符
+    // Add placeholder
     if (isAddPlaceholder) {
       this.control.addPlaceholder(preIndex, context)
     }
@@ -314,7 +314,7 @@ export class SelectControl implements IControlInstance {
     context: IControlContext = {},
     options: IControlRuleOption = {}
   ) {
-    // 校验是否可以设置
+    // Validate if setting is allowed
     if (
       !options.isIgnoreDisabledRule &&
       this.control.getIsDisabledControl(context)
@@ -325,10 +325,10 @@ export class SelectControl implements IControlInstance {
     const range = context.range || this.control.getRange()
     const control = this.element.control!
     const newCodes = code?.split(this.VALUE_DELIMITER) || []
-    // 缓存旧值
+    // Cache old value
     const oldCode = control.code
     const oldCodes = control.code?.split(this.VALUE_DELIMITER) || []
-    // 选项相同时无需重复渲染
+    // Options are the same, no need to repeat rendering
     const isMultiSelect = control.isMultiSelect
     if (
       (!isMultiSelect && code === oldCode) ||
@@ -344,10 +344,10 @@ export class SelectControl implements IControlInstance {
     }
     const valueSets = control.valueSets
     if (!Array.isArray(valueSets) || !valueSets.length) return
-    // 转换文本
+    // Convert text
     const text = this.getText(newCodes)
     if (!text) {
-      // 之前存在内容时清空文本
+      // Clear text if there was content before
       if (oldCode) {
         const prefixIndex = this.clearSelect(context)
         if (~prefixIndex) {
@@ -361,21 +361,21 @@ export class SelectControl implements IControlInstance {
       }
       return
     }
-    // 样式赋值元素-默认值的第一个字符样式，否则取默认样式
+    // Style assignment element - default style of the first character of the default value, otherwise take default style
     const valueElement = this.getValue(context)[0]
     const styleElement = valueElement
       ? pickObject(valueElement, EDITOR_ELEMENT_STYLE_ATTR)
       : pickObject(elementList[range.startIndex], CONTROL_STYLE_ATTR)
-    // 清空选项
+    // Clear options
     const prefixIndex = this.clearSelect(context, {
       isAddPlaceholder: false
     })
     if (!~prefixIndex) return
-    // 当前无值时清空占位符
+    // Clear placeholder if there was no value
     if (!oldCode) {
       this.control.removePlaceholder(prefixIndex, context)
     }
-    // 属性赋值元素-默认为前缀属性
+    // Attribute assignment element - default to prefix attribute
     const propertyElement = omitObject(
       elementList[prefixIndex],
       EDITOR_ELEMENT_STYLE_ATTR
@@ -396,7 +396,7 @@ export class SelectControl implements IControlInstance {
       })
       draw.spliceElementList(elementList, start + i, 0, [newElement])
     }
-    // 设置状态
+    // Set state
     this.control.setControlProperties(
       {
         code
@@ -406,7 +406,7 @@ export class SelectControl implements IControlInstance {
         range: { startIndex: prefixIndex, endIndex: prefixIndex }
       }
     )
-    // 重新渲染控件
+    // Repaint control
     if (!context.range) {
       const newIndex = start + data.length - 1
       this.control.repaintControl({
@@ -427,7 +427,7 @@ export class SelectControl implements IControlInstance {
     if (!Array.isArray(valueSets) || !valueSets.length) return
     const position = this.control.getPosition()
     if (!position) return
-    // dom树：<div><ul><li>item</li></ul></div>
+    // dom tree: <div><ul><li>item</li></ul></div>
     const selectPopupContainer = document.createElement('div')
     selectPopupContainer.classList.add(`${EDITOR_PREFIX}-select-control-popup`)
     selectPopupContainer.setAttribute(EDITOR_COMPONENT, EditorComponent.POPUP)
@@ -460,7 +460,7 @@ export class SelectControl implements IControlInstance {
       ul.append(li)
     }
     selectPopupContainer.append(ul)
-    // 定位
+    // Position
     const {
       coordinate: {
         leftTop: [left, top]
@@ -470,7 +470,7 @@ export class SelectControl implements IControlInstance {
     const preY = this.control.getPreY()
     selectPopupContainer.style.left = `${left}px`
     selectPopupContainer.style.top = `${top + preY + lineHeight}px`
-    // 追加至container
+    // Append to container
     const container = this.control.getContainer()
     container.append(selectPopupContainer)
     this.selectDom = selectPopupContainer

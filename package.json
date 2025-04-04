@@ -59,9 +59,9 @@
     "eslint": "7.32.0",
     "simple-git-hooks": "^2.8.1",
     "typescript": "4.9.5",
-    "vite": "^2.4.2",
+    "vite": "^6.2.5",
     "vite-plugin-css-injected-by-js": "^2.1.1",
-    "vitepress": "1.0.0-beta.6",
+    "vitepress": "^0.1.1",
     "vue": "^3.2.45"
   },
   "dependencies": {
